@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --gaming-bg: #0a0a0f;
+  --primary-glow: rgba(139, 92, 246, 0.5); /* Purple glow */
+}
+
+/* 2. Apply them directly to the body */
+body {
+  background-color: var(--gaming-bg);
+  color: white;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.08), transparent 25%);
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari and Opera */
+  }
+}

@@ -17,8 +17,8 @@ const NavItem = ({ icon: Icon, label, to }) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             className={`flex items-center justify-center h-10 px-3 rounded-full border transition-all duration-300 ${isActive
-                    ? "bg-white/10 border-purple-500/50 text-white shadow-[0_0_15px_var(--primary-glow)]"
-                    : "bg-white/5 border-transparent text-gray-400 hover:text-white hover:bg-white/10"
+                ? "bg-white/10 border-purple-500/50 text-white shadow-[0_0_15px_var(--primary-glow)]"
+                : "bg-white/5 border-transparent text-gray-400 hover:text-white hover:bg-white/10"
                 }`}
         >
             <Icon size={18} className={isActive ? "text-purple-400 transition-colors" : ""} />
@@ -37,7 +37,7 @@ const NavItem = ({ icon: Icon, label, to }) => {
     );
 };
 
-export default function Navbar({ searchQuery, setSearchQuery }) {
+export default function Navbar({ searchQuery, setSearchQuery, onOpenProfile }) {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
@@ -57,9 +57,9 @@ export default function Navbar({ searchQuery, setSearchQuery }) {
 
                 <div className="flex items-center gap-2 shrink-0">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                        <span className="font-bold text-white text-lg">G</span>
+                        <span className="font-bold text-white text-lg">RP</span>
                     </div>
-                    <span className="hidden sm:block text-xl font-bold tracking-wide">GameVault</span>
+                    <span className="hidden sm:block text-xl font-bold tracking-wide">RePlay</span>
                 </div>
 
                 <div className="relative group flex-1 max-w-md">
@@ -99,7 +99,13 @@ export default function Navbar({ searchQuery, setSearchQuery }) {
                                     className="absolute right-0 top-full mt-3 w-48 bg-[#12121a] border border-white/10 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden origin-top-right"
                                 >
                                     <div className="flex flex-col py-2">
-                                        <button className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors w-full text-left">
+                                        <button
+                                            onClick={() => {
+                                                onOpenProfile(); // Trigger the modal
+                                                setIsProfileOpen(false); // Close the dropdown menu
+                                            }}
+                                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+                                        >
                                             <User size={16} /> My Profile
                                         </button>
                                         <button className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors w-full text-left">

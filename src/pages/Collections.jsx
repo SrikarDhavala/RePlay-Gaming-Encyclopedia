@@ -13,7 +13,7 @@ export default function Collections({ searchQuery }) {
     return (
         <div className="animate-in fade-in duration-500">
             <div className="mb-10">
-                <h1 className="text-4xl md:text-5xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+                <h1 className="text-4xl md:text-5xl font-extrabold mb-3 py-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
                     My Collections
                 </h1>
                 <p className="text-gray-400 max-w-xl">

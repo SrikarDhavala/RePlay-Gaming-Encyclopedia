@@ -37,7 +37,7 @@ const NavItem = ({ icon: Icon, label, to }) => {
     );
 };
 
-export default function Navbar({ searchQuery, setSearchQuery, onOpenProfile }) {
+export default function Navbar({ searchQuery, setSearchQuery, onOpenProfile, onOpenSettings }) {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
@@ -52,7 +52,7 @@ export default function Navbar({ searchQuery, setSearchQuery, onOpenProfile }) {
     }, []);
 
     return (
-        <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0f]/80 backdrop-blur-xl">
+        <nav className="sticky top-0 z-50 border-b bg-white/80 dark:bg-[#0a0a0f]/80 border-slate-200 dark:border-white/10 backdrop-blur-xl">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
 
                 <div className="flex items-center gap-2 shrink-0">
@@ -108,7 +108,13 @@ export default function Navbar({ searchQuery, setSearchQuery, onOpenProfile }) {
                                         >
                                             <User size={16} /> My Profile
                                         </button>
-                                        <button className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors w-full text-left">
+                                        <button
+                                            onClick={() => {
+                                                onOpenSettings(); // Trigger the Settings Modal
+                                                setIsProfileOpen(false); // Close the dropdown menu
+                                            }}
+                                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+                                        >
                                             <Settings size={16} /> Settings
                                         </button>
                                         <div className="h-px bg-white/10 my-1 w-full" />

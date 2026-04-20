@@ -5,14 +5,17 @@
   --primary-glow: rgba(139, 92, 246, 0.5); /* Purple glow */
 }
 
-/* 2. Apply them directly to the body */
 body {
+  min-height: 100vh;
+  background-color: #f8fafc; 
+  transition: background-color 0.3s ease;
+}
+
+html.dark body {
   background-color: var(--gaming-bg);
-  color: white;
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.08), transparent 25%);
-  min-height: 100vh;
 }
 
 @layer utilities {

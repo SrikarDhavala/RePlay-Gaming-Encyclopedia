@@ -1,5 +1,7 @@
 export const STEAM_CATEGORIES = {
     heavyHitters: [
+        { id: 2215430, title: "Ghost of Tsushima DIRECTOR'S CUT" },
+        { id: 1174180, title: "Red Dead Redemption 2"},
         { id: 730, title: "Counter-Strike 2" },
         { id: 578080, title: "PUBG: BATTLEGROUNDS" },
         { id: 271590, title: "Grand Theft Auto V" },
@@ -8,12 +10,12 @@ export const STEAM_CATEGORIES = {
         { id: 1085660, title: "Destiny 2" }
     ],
     newAndTrending: [
-        { id: 2215430, title: "Ghost of Tsushima DIRECTOR'S CUT" },
         { id: 2050650, title: "Resident Evil 4 Remake" },
-        { id: 176895, title: "Crimson Desert" },
+        { id: 3764200, title: "Resident Evil Requiem" },
+        { id: 2592160, title: "Dispatch" },
+        { id: 2767030, title: "Marvel Rivals" },
         { id: 23642, title: "Monster Hunter Wilds" },
-        { id: 17054, title: "Kingdom Come: Deliverance II" },
-        { id: 106435, title: "Marvel Rivals" }
+        { id: 17054, title: "Kingdom Come: Deliverance II" }
     ],
     openWorldRpg: [
         { id: 1245620, title: "Elden Ring" },
@@ -39,6 +41,7 @@ export const STEAM_CATEGORIES = {
     ],
     indieGems: [
         { id: 367520, title: "Hollow Knight" },
+        { id: 2592160, title: "Dispatch" },
         { id: 1145360, title: "Hades" },
         { id: 1145350, title: "Hades II" },
         { id: 105600, title: "Terraria" },

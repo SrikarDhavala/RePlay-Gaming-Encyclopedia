@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Monitor } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowLeft, Image as ImageIcon, Monitor, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function GameDetail() {
     const { id } = useParams();
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+
+    const galleryScrollRef = useRef(null);
 
     useEffect(() => {
         const fetchGameDetails = async () => {
@@ -27,6 +30,48 @@ export default function GameDetail() {
         // Scroll to top when page loads
         window.scrollTo(0, 0);
     }, [id]);
+
+    //Handle Keyboard navigation for the Lightbox
+    useEffect(() => {
+        if (selectedIndex === null) {
+            document.body.style.overflow = "unset";
+            return;
+        }
+
+        document.body.style.overflow = "hidden"; // Lock background scroll
+
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") setSelectedIndex(null);
+            if (e.key === "ArrowRight") handleNext(e);
+            if (e.key === "ArrowLeft") handlePrev(e);
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            document.body.style.overflow = "unset";
+        };
+    }, [selectedIndex, game]);
+
+    //Gallery scroll logic
+    const scrollGallery = (direction) => {
+        if (galleryScrollRef.current) {
+            const clientWidth = galleryScrollRef.current.clientWidth;
+            const scrollAmount = direction === "left" ? -(clientWidth - 100) : (clientWidth - 100);
+            galleryScrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        }
+    };
+
+    //Lightbox navigation logic
+    const handleNext = (e) => {
+        e.stopPropagation(); // Prevent closing the modal
+        setSelectedIndex((prev) => (prev === game.screenshots.length - 1 ? 0 : prev + 1));
+    };
+
+    const handlePrev = (e) => {
+        e.stopPropagation(); // Prevent closing the modal
+        setSelectedIndex((prev) => (prev === 0 ? game.screenshots.length - 1 : prev - 1));
+    };
 
     if (loading) {
         return (
@@ -102,7 +147,117 @@ export default function GameDetail() {
                     </div>
 
                 </motion.div>
+
+                {/*Screenshot gallery section*/}
+                {game.screenshots && game.screenshots.length > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mt-20"
+                    >
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                            <ImageIcon className="text-purple-500 dark:text-purple-400" /> Gallery
+                        </h3>
+
+                        <div className="relative group/gallery">
+
+                            {/* Gallery Left Arrow */}
+                            <button
+                                onClick={() => scrollGallery("left")}
+                                className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-30 h-12 w-12 flex items-center justify-center bg-white dark:bg-[#12121a] hover:bg-gray-100 dark:hover:bg-[#1a1a24] border border-slate-200 dark:border-white/10 rounded-full text-slate-900 dark:text-white opacity-0 group-hover/gallery:opacity-100 transition-all duration-300 hidden md:flex shadow-lg hover:scale-110"
+                            >
+                                <ChevronLeft size={24} />
+                            </button>
+
+                            <div
+                                ref={galleryScrollRef}
+                                className="flex gap-4 overflow-x-auto py-4 -mx-4 px-4 snap-x snap-mandatory hide-scrollbar"
+                            >
+                                {game.screenshots.map((img, idx) => (
+                                    <div
+                                        key={idx}
+                                        onClick={() => setSelectedIndex(idx)} // Set the numerical index!
+                                        className="relative min-w-[260px] md:min-w-[320px] h-48 snap-start shrink-0 cursor-pointer overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 group shadow-md"
+                                    >
+                                        <img
+                                            src={img}
+                                            alt={`${game.title} screenshot ${idx + 1}`}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Gallery Right Arrow */}
+                            <button
+                                onClick={() => scrollGallery("right")}
+                                className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-30 h-12 w-12 flex items-center justify-center bg-white dark:bg-[#12121a] hover:bg-gray-100 dark:hover:bg-[#1a1a24] border border-slate-200 dark:border-white/10 rounded-full text-slate-900 dark:text-white opacity-0 group-hover/gallery:opacity-100 transition-all duration-300 hidden md:flex shadow-lg hover:scale-110"
+                            >
+                                <ChevronRight size={24} />
+                            </button>
+
+                        </div>
+                    </motion.div>
+                )}
             </div>
+
+            {/*Lightbox Modal for Fullscreen Image Viewing*/}
+            <AnimatePresence>
+                {selectedIndex !== null && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-12 bg-black/90 backdrop-blur-md"
+                        onClick={() => setSelectedIndex(null)}
+                    >
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-6 right-6 text-white/50 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-50"
+                            onClick={() => setSelectedIndex(null)}
+                        >
+                            <X size={24} />
+                        </button>
+
+                        {/* Fullscreen Left Arrow */}
+                        <button
+                            onClick={handlePrev}
+                            className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white bg-black/50 hover:bg-white/20 p-3 rounded-full transition-colors z-50 backdrop-blur-md"
+                        >
+                            <ChevronLeft size={32} />
+                        </button>
+
+                        {/* The Image (uses key to force Framer Motion animation on swap) */}
+                        <motion.img
+                            key={selectedIndex}
+                            initial={{ scale: 0.95, opacity: 0, x: 20 }}
+                            animate={{ scale: 1, opacity: 1, x: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, x: -20 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            src={game.screenshots[selectedIndex]}
+                            alt="Fullscreen screenshot"
+                            className="max-w-full max-h-full rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] object-contain"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+
+                        {/* Fullscreen Right Arrow */}
+                        <button
+                            onClick={handleNext}
+                            className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white bg-black/50 hover:bg-white/20 p-3 rounded-full transition-colors z-50 backdrop-blur-md"
+                        >
+                            <ChevronRight size={32} />
+                        </button>
+
+                        {/* Image Counter */}
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 bg-black/50 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-medium tracking-widest">
+                            {selectedIndex + 1} / {game.screenshots.length}
+                        </div>
+
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

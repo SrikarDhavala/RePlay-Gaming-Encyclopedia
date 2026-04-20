@@ -82,7 +82,8 @@ def get_steam_game(appid):
                 "developer": game_data.get('developers', ['Unknown'])[0],
                 "genres": [g['description'] for g in game_data.get('genres', [])][:3],
                 "platform": "PC",
-                "sysReq": game_data.get('pc_requirements', {}).get('minimum', 'Requirements not listed.')
+                "sysReq": game_data.get('pc_requirements', {}).get('minimum', 'Requirements not listed.'),
+                "screenshots": [s['path_full'] for s in game_data.get('screenshots', [])][:6]
             }
             return jsonify(cleaned_data), 200
             

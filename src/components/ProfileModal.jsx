@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Edit2, Save, User as UserIcon } from "lucide-react";
+import { X, Edit2, Save, User as UserIcon, Check } from "lucide-react";
 
 const ALL_GENRES = [
     "Action", "RPG", "Shooter", "Strategy", "Sports",
@@ -10,37 +10,27 @@ const ALL_GENRES = [
 
 export default function ProfileModal({ isOpen, onClose }) {
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editData, setEditData] = useState({ name: "", username: "", phone: "", genres: [] });
 
-    // Mock user data (In a real app, fetch this from Flask/MongoDB on load)
-    const [userData, setUserData] = useState({
-        name: "", username: "", phone: "", genres: []
-    });
+    // Get the current user from localStorage
+    const user = JSON.parse(localStorage.getItem("gamevault_user"));
 
-    // Temporary state for edits before saving
-    const [editData, setEditData] = useState({ ...userData });
-
-    // Reset edit data when modal opens/closes
+    // Every time the modal opens, populate the inputs with the latest local storage data
     useEffect(() => {
-        if (isOpen) {
-            const storedUser = localStorage.getItem("gamevault_user");
-            if (storedUser) {
-                const parsedUser = JSON.parse(storedUser);
-                setUserData(parsedUser);
-                setEditData(parsedUser);
-            }
-            setIsEditing(false);
+        if (isOpen && user) {
+            setEditData({
+                name: user.name || "",
+                username: user.username || "",
+                phone: user.phone || "",
+                genres: user.genres || [] // Load genres from storage
+            });
+            setIsEditing(false); // Always start in view-only mode
         }
     }, [isOpen]);
 
-    const handleSave = () => {
-        setUserData({ ...editData });
-        setIsEditing(false);
-        // Here you would also send a PUT/PATCH request to your Python backend to update MongoDB
-    };
-
+    // NEW: Function to handle clicking the genre bubbles
     const toggleGenre = (genre) => {
-        if (!isEditing) return;
-
         if (editData.genres.includes(genre)) {
             setEditData({ ...editData, genres: editData.genres.filter(g => g !== genre) });
         } else if (editData.genres.length < 5) {
@@ -48,7 +38,38 @@ export default function ProfileModal({ isOpen, onClose }) {
         }
     };
 
-    if (!isOpen) return null;
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            // 1. Send the new data to the database
+            const res = await fetch("http://localhost:5000/api/profile/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: user.email,
+                    name: editData.name,
+                    username: editData.username,
+                    phone: editData.phone,
+                    genres: editData.genres // Send genres to the backend!
+                })
+            });
+
+            if (res.ok) {
+                // 2. Update the localStorage session so the app remembers it
+                const updatedUser = { ...user, ...editData };
+                localStorage.setItem("gamevault_user", JSON.stringify(updatedUser));
+
+                // 3. Turn off edit mode
+                setIsEditing(false);
+            }
+        } catch (error) {
+            console.error("Failed to update profile:", error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    if (!isOpen || !user) return null;
 
     return (
         <AnimatePresence>
@@ -126,8 +147,8 @@ export default function ProfileModal({ isOpen, onClose }) {
                                 {isEditing && <span className="text-xs text-purple-400">{editData.genres.length}/5</span>}
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                {(isEditing ? ALL_GENRES : userData.genres).map(genre => {
-                                    const isSelected = editData.genres.includes(genre);
+                                {(isEditing ? ALL_GENRES : (user?.genres || [])).map(genre => {
+                                    const isSelected = editData.genres?.includes(genre);
                                     return (
                                         <button
                                             key={genre}
@@ -154,22 +175,23 @@ export default function ProfileModal({ isOpen, onClose }) {
                         {isEditing ? (
                             <>
                                 <button
-                                    onClick={() => { setIsEditing(false); setEditData({ ...userData }); }}
-                                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                                    onClick={() => setIsEditing(false)}
+                                    className="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleSave}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                                    disabled={isSaving}
+                                    className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-500 dark:to-blue-500 hover:shadow-lg transition-all disabled:opacity-70"
                                 >
-                                    <Save size={16} /> Save Changes
+                                    {isSaving ? "Saving..." : <><Check size={16} /> Save Changes</>}
                                 </button>
                             </>
                         ) : (
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-white/10 hover:bg-white/20 text-white transition-colors border border-white/10"
+                                className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold text-slate-900 dark:text-white bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 transition-colors"
                             >
                                 <Edit2 size={16} /> Edit Profile
                             </button>

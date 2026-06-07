@@ -68,7 +68,7 @@ export default function Auth() {
                 className="w-full max-w-md bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-[0_0_40px_rgba(139,92,246,0.1)]"
             >
                 <h2 className="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500 pb-1">
-                    {isLogin ? "Welcome Back" : "Join GameVault"}
+                    {isLogin ? "Welcome Back" : "Join RePlay"}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -142,7 +142,7 @@ export default function Auth() {
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-400">
-                    {isLogin ? "New to GameVault? " : "Already have an account? "}
+                    {isLogin ? "New to RePlay? " : "Already have an account? "}
                     <button onClick={() => setIsLogin(!isLogin)} className="text-purple-400 hover:text-purple-300 font-semibold">
                         {isLogin ? "Sign Up" : "Sign In"}
                     </button>

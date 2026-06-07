@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GameCard from "./GameCard";
 
-export default function GameRow({ title, games }) {
+export default function GameRow({ title, games, onOpenCollection }) {
     const [hasLoaded, setHasLoaded] = useState(false);
     const observerRef = useRef(null);
     const scrollRef = useRef(null);
@@ -63,7 +63,7 @@ export default function GameRow({ title, games }) {
                                 key={game.id}
                                 className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] xl:w-[calc(25%-18px)]"
                             >
-                                <GameCard appId={game.id} fallbackTitle={game.title} />
+                                <GameCard appId={game.id} fallbackTitle={game.title} onOpenCollection={onOpenCollection} />
                             </div>
                         ))}
                     </div>

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Image as ImageIcon, Monitor, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Image as ImageIcon, Monitor, X, ChevronLeft, ChevronRight, ExternalLink, BookmarkPlus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function GameDetail() {
+export default function GameDetail({ onOpenCollection }) {
     const { id } = useParams();
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -130,6 +130,31 @@ export default function GameDetail() {
                                     {genre}
                                 </span>
                             ))}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4">
+
+                            <motion.a
+                                href={`https://store.steampowered.com/app/${game.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-500 dark:to-blue-500 text-white font-bold shadow-lg hover:shadow-xl dark:shadow-[0_0_20px_rgba(139,92,246,0.3)] dark:hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] transition-shadow w-full sm:w-auto"
+                            >
+                                View on Steam <ExternalLink size={18} />
+                            </motion.a>
+
+                            <motion.button
+                                onClick={() => onOpenCollection({ id: game.id, title: game.title, image: game.image })}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-900 dark:text-white font-bold transition-colors shadow-md border border-slate-300 dark:border-white/5 w-full sm:w-auto"
+                            >
+                                Save to Collection <BookmarkPlus size={18} />
+                            </motion.button>
+
                         </div>
                     </div>
 

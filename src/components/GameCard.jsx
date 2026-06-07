@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Monitor, AlertCircle } from "lucide-react";
+import { Monitor, AlertCircle, BookmarkPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Added fallbackTitle as a prop
-export default function GameCard({ appId, fallbackTitle }) {
+export default function GameCard({ appId, fallbackTitle, onOpenCollection }) {
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -67,6 +67,17 @@ export default function GameCard({ appId, fallbackTitle }) {
             >
                 <div className="relative h-48 w-full overflow-hidden shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent z-10" />
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault(); // Prevents the Link from navigating to GameDetail
+                            e.stopPropagation();
+                            onOpenCollection({ id: game.id, title: game.title, image: game.image });
+                        }}
+                        className="absolute top-3 right-3 z-30 bg-black/50 hover:bg-purple-600 backdrop-blur-md p-2 rounded-full text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110"
+                    >
+                        <BookmarkPlus size={18} />
+                    </button>
+
                     {/* Fallback to gray box if no image is returned */}
                     {game.image ? (
                         <img src={game.image} alt={game.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />

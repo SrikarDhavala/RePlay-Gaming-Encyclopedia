@@ -2,6 +2,7 @@ export const STEAM_CATEGORIES = {
     heavyHitters: [
         { id: 2215430, title: "Ghost of Tsushima DIRECTOR'S CUT" },
         { id: 1174180, title: "Red Dead Redemption 2"},
+        { id: 1222140, title: "Detroit: Become Human"},
         { id: 730, title: "Counter-Strike 2" },
         { id: 578080, title: "PUBG: BATTLEGROUNDS" },
         { id: 271590, title: "Grand Theft Auto V" },
@@ -14,8 +15,8 @@ export const STEAM_CATEGORIES = {
         { id: 3764200, title: "Resident Evil Requiem" },
         { id: 2592160, title: "Dispatch" },
         { id: 2767030, title: "Marvel Rivals" },
-        { id: 23642, title: "Monster Hunter Wilds" },
-        { id: 17054, title: "Kingdom Come: Deliverance II" }
+        { id: 2246340, title: "Monster Hunter Wilds" },
+        { id: 1771300, title: "Kingdom Come: Deliverance II" }
     ],
     openWorldRpg: [
         { id: 1245620, title: "Elden Ring" },
@@ -53,7 +54,7 @@ export const STEAM_CATEGORIES = {
         { id: 892970, title: "Valheim" },
         { id: 1966720, title: "Lethal Company" },
         { id: 553850, title: "Helldivers 2" },
-        { id: 1326420, title: "Sons of the Forest" },
+        { id: 1326470, title: "Sons of the Forest" },
         { id: 221100, title: "DayZ" }
     ],
     valveClassics: [
